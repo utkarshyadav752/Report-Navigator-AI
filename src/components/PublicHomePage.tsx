@@ -21,15 +21,13 @@ import { KnowledgeAtlas3D } from './KnowledgeAtlas3D';
 interface PublicHomePageProps {
   theme: ThemeMode;
   onToggleTheme: () => void;
-  onSignIn: () => void;
-  onGetStarted: () => void;
+  onOpenDashboard: () => void;
 }
 
 export const PublicHomePage: React.FC<PublicHomePageProps> = ({
   theme,
   onToggleTheme,
-  onSignIn,
-  onGetStarted,
+  onOpenDashboard,
 }) => {
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
@@ -107,7 +105,7 @@ export const PublicHomePage: React.FC<PublicHomePageProps> = ({
             </button>
           </nav>
 
-          {/* Right Actions: Theme Toggle, Sign In, Get Started */}
+          {/* Right Actions: Theme Toggle & Open Dashboard */}
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               type="button"
@@ -121,20 +119,11 @@ export const PublicHomePage: React.FC<PublicHomePageProps> = ({
 
             <button
               type="button"
-              onClick={onSignIn}
-              data-testid="nav-sign-in-btn"
-              className="px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap cursor-pointer"
-            >
-              Sign In
-            </button>
-
-            <button
-              type="button"
-              onClick={onGetStarted}
+              onClick={onOpenDashboard}
               data-testid="nav-get-started-btn"
               className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
             >
-              <span>Get Started</span>
+              <span>Open Dashboard</span>
               <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </div>
@@ -171,21 +160,12 @@ export const PublicHomePage: React.FC<PublicHomePageProps> = ({
               <div className="pt-2 flex flex-wrap items-center gap-3.5">
                 <button
                   type="button"
-                  onClick={onGetStarted}
+                  onClick={onOpenDashboard}
                   data-testid="hero-get-started-btn"
                   className="px-6 py-3 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-sm transition-colors inline-flex items-center gap-2 cursor-pointer"
                 >
-                  <span>Get Started</span>
+                  <span>Open Research Dashboard</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={onSignIn}
-                  data-testid="hero-sign-in-btn"
-                  className="px-6 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors cursor-pointer"
-                >
-                  Sign In
                 </button>
 
                 <button
@@ -508,10 +488,10 @@ export const PublicHomePage: React.FC<PublicHomePageProps> = ({
 
               <button
                 type="button"
-                onClick={onGetStarted}
+                onClick={onOpenDashboard}
                 className="px-5 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
-                <span>Get Started to Map Your Reports</span>
+                <span>Open Dashboard to Map Your Reports</span>
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </div>
@@ -590,24 +570,16 @@ export const PublicHomePage: React.FC<PublicHomePageProps> = ({
             <div className="md:col-span-3 space-y-3 text-xs">
               <p className="font-semibold text-white uppercase tracking-wider">Workspace Access</p>
               <p className="text-slate-400 leading-relaxed">
-                Access your private document library and research history.
+                Access your document library, AI assistant, and research history directly.
               </p>
               <div className="flex flex-wrap items-center gap-2.5 pt-1">
                 <button
                   type="button"
-                  onClick={onSignIn}
-                  data-testid="footer-sign-in-btn"
-                  className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold transition-colors cursor-pointer"
-                >
-                  Sign In
-                </button>
-                <button
-                  type="button"
-                  onClick={onGetStarted}
+                  onClick={onOpenDashboard}
                   data-testid="footer-get-started-btn"
                   className="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-colors cursor-pointer"
                 >
-                  Get Started
+                  Open Dashboard
                 </button>
               </div>
             </div>

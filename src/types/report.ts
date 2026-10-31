@@ -44,7 +44,6 @@ export type ThemeMode = 'light' | 'dark';
 
 export type NavigationSection =
   | 'home'
-  | 'auth'
   | 'dashboard'
   | 'explore'
   | 'upload'

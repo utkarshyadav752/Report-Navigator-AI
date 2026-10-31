@@ -14,7 +14,6 @@ import {
   UserCheck,
 } from 'lucide-react';
 import {
-  AppUserProfile,
   ChatMessage,
   NavigationSection,
   Report,
@@ -28,7 +27,6 @@ interface DashboardViewProps {
   totalQuestionsAnswered: number;
   recentMessages: ChatMessage[];
   savedResearch: SavedResearchItem[];
-  userProfile: AppUserProfile | null;
   onSelectReport: (reportId: string) => void;
   onNavigate: (section: NavigationSection) => void;
   onOpenSourcePage: (pageNumber: number) => void;
@@ -41,7 +39,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   totalQuestionsAnswered,
   recentMessages,
   savedResearch,
-  userProfile,
   onSelectReport,
   onNavigate,
   onOpenSourcePage,
@@ -55,7 +52,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-12" data-testid="dashboard-view">
-      {/* Personalized User Welcome Banner */}
+      {/* Workspace Welcome Banner */}
       <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
@@ -64,7 +61,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div>
             <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-                {userProfile?.authProviderLabel || 'Google Cloud Auth'}
+                Direct Workspace Access
               </span>
               <span aria-hidden="true">·</span>
               <span>
@@ -72,9 +69,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </span>
             </div>
             <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-              {userProfile
-                ? `Welcome back, ${userProfile.displayName}`
-                : 'Welcome to Report Navigator AI Research Hub'}
+              Welcome to Report Navigator AI Research Hub
             </h2>
           </div>
         </div>

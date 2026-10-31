@@ -1,17 +1,15 @@
 import React from 'react';
-import { Lock, LogOut, Moon, ShieldCheck, Sun, Trash2 } from 'lucide-react';
-import { AIModelMode, AppUserProfile, LanguageMode, ThemeMode } from '../types/report';
+import { ExternalLink, Lock, Moon, ShieldCheck, Sun, Trash2 } from 'lucide-react';
+import { AIModelMode, LanguageMode, ThemeMode } from '../types/report';
 
 interface SettingsViewProps {
   theme: ThemeMode;
   languageMode: LanguageMode;
   modelMode: AIModelMode;
-  user: AppUserProfile | null;
   uploadedCount: number;
   onToggleTheme: (theme: ThemeMode) => void;
   onChangeLanguage: (lang: LanguageMode) => void;
   onChangeModel: (model: AIModelMode) => void;
-  onSignOut: () => void;
   onClearHistory: () => void;
 }
 
@@ -19,22 +17,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   theme,
   languageMode,
   modelMode,
-  user,
   uploadedCount,
   onToggleTheme,
   onChangeLanguage,
   onChangeModel,
-  onSignOut,
   onClearHistory,
 }) => {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+    <div className="max-w-4xl mx-auto px-6 py-8 space-y-6" data-testid="settings-view">
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-          Settings, Language & Security Configuration
+          Settings, Language &amp; Workspace Configuration
         </h1>
         <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-          Configure appearance, multilingual explanation modes, RAG reasoning models, and account security.
+          Configure appearance, multilingual explanation modes, RAG reasoning models, and workspace data management.
         </p>
       </div>
 
@@ -53,7 +49,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <button
               type="button"
               onClick={() => onToggleTheme('light')}
-              className={`px-3.5 py-2 text-xs font-medium rounded-lg border flex items-center gap-1.5 transition-colors ${
+              className={`px-3.5 py-2 text-xs font-medium rounded-lg border flex items-center gap-1.5 transition-colors cursor-pointer ${
                 theme === 'light'
                   ? 'bg-indigo-600 text-white border-indigo-600'
                   : 'bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800'
@@ -65,7 +61,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <button
               type="button"
               onClick={() => onToggleTheme('dark')}
-              className={`px-3.5 py-2 text-xs font-medium rounded-lg border flex items-center gap-1.5 transition-colors ${
+              className={`px-3.5 py-2 text-xs font-medium rounded-lg border flex items-center gap-1.5 transition-colors cursor-pointer ${
                 theme === 'dark'
                   ? 'bg-indigo-600 text-white border-indigo-600'
                   : 'bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800'
@@ -99,7 +95,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 key={l.id}
                 type="button"
                 onClick={() => onChangeLanguage(l.id)}
-                className={`px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${
+                className={`px-3 py-2 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
                   languageMode === l.id
                     ? 'bg-indigo-600 text-white border-indigo-600'
                     : 'bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800'
@@ -132,7 +128,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 key={m.id}
                 type="button"
                 onClick={() => onChangeModel(m.id)}
-                className={`px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${
+                className={`px-3 py-2 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
                   modelMode === m.id
                     ? 'bg-indigo-600 text-white border-indigo-600'
                     : 'bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800'
@@ -145,37 +141,32 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
-      {/* 2. Google Cloud Authentication & Session Persistence */}
+      {/* 2. Workspace Data & API Documentation */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
-              Google Cloud Authentication & Session
+              REST API &amp; Swagger OpenAPI Documentation
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              {user
-                ? `Signed in as ${user.displayName} (${user.email}) · Provider: Google Cloud Auth`
-                : 'Authenticated with Google Cloud Auth to persist research collections, bookmarks, and Q&A history.'}
+              Inspect and test all Report Navigator AI backend endpoints via Swagger UI (/api-docs) and OpenAPI 3.0 JSON (/api/openapi.json).
             </p>
           </div>
 
-          {user && (
-            <button
-              type="button"
-              onClick={onSignOut}
-              data-testid="settings-logout-btn"
-              className="px-4 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-1.5"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Log Out
-            </button>
-          )}
+          <a
+            href="/api-docs"
+            data-testid="open-swagger-docs-link"
+            className="px-4 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Open Swagger UI
+          </a>
         </div>
 
         <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
-              Clear Uploaded Document & Chat History
+              Clear Uploaded Document &amp; Chat History
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Removes {uploadedCount} uploaded document(s), saved bookmarks, and resets conversation history to a clean empty workspace.
@@ -185,7 +176,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <button
             type="button"
             onClick={onClearHistory}
-            className="px-4 py-2 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg flex items-center gap-1.5"
+            data-testid="clear-history-btn"
+            className="px-4 py-2 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg flex items-center gap-1.5 cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
             Clear Document History
@@ -197,10 +189,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 space-y-3">
         <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
           <ShieldCheck className="w-4 h-4" />
-          <span>Security, File Validation & Zero-Hallucination Safeguards</span>
+          <span>Security, File Validation &amp; Zero-Hallucination Safeguards</span>
         </div>
         <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-          All uploaded PDF, TXT, CSV, JSON, and image documents undergo strict MIME-type and file-size validation (max 50MB) and are parsed locally in your browser via PDF.js. User data is isolated per authenticated UID via Firestore Attribute-Based Access Control (ABAC) rules. Every AI response passes through our PaperQA + haiku.rag + OpenRAG hybrid reranker and numerical fact-checker; unsupported queries strictly return &quot;Insufficient evidence found in the uploaded reports.&quot;
+          All uploaded PDF, TXT, CSV, JSON, and image documents undergo strict MIME-type and file-size validation (max 50MB) and are parsed locally in your browser via PDF.js. Every AI response passes through our PaperQA + haiku.rag + OpenRAG hybrid reranker and numerical fact-checker; unsupported queries strictly return &quot;Insufficient evidence found in the uploaded reports.&quot;
         </p>
         <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 pt-1">
           <Lock className="w-3.5 h-3.5 text-indigo-500" />

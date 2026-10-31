@@ -58,17 +58,142 @@ async function startServer() {
   const app = express();
   app.use(express.json({ limit: '25mb' }));
 
-  // Verify Google Cloud / Firebase Auth Configuration & Bearer Token structure on backend
-  app.get('/api/auth/status', (req, res) => {
-    const authHeader = req.headers.authorization || '';
-    const hasBearerToken = authHeader.startsWith('Bearer ') && authHeader.slice(7).trim().length > 20;
+  const openApiSpec = {
+    openapi: '3.0.3',
+    info: {
+      title: 'Report Navigator AI API',
+      version: '1.0.0',
+      description:
+        'Evidence-Grounded Document Intelligence, Hybrid RAG Q&A, Multimodal Image Analysis, and Table Explanation REST API (Direct Access — No Google Authentication Required).',
+    },
+    servers: [{ url: '/', description: 'Current Server' }],
+    paths: {
+      '/api/health': {
+        get: {
+          summary: 'Health check endpoint',
+          responses: {
+            '200': {
+              description: 'Service is healthy and directly accessible',
+            },
+          },
+        },
+      },
+      '/api/models/status': {
+        get: {
+          summary: 'Discover available local Ollama, deterministic RAG, and cloud models',
+          responses: {
+            '200': {
+              description: 'Model connection status and list of available models',
+            },
+          },
+        },
+      },
+      '/api/rag/ask': {
+        post: {
+          summary: 'Ask a verified RAG question against retrieved report chunks and tables',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    question: { type: 'string' },
+                    reportTitle: { type: 'string' },
+                    retrievedChunks: { type: 'array', items: { type: 'object' } },
+                    tables: { type: 'array', items: { type: 'object' } },
+                    languageMode: { type: 'string', enum: ['standard', 'simple', 'hinglish', 'hindi'] },
+                    modelMode: { type: 'string', enum: ['fast', 'balanced', 'deep_thinking'] },
+                    isSupported: { type: 'boolean' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': { description: 'Evidence-grounded answer with model metadata' },
+          },
+        },
+      },
+      '/api/rag/embed': {
+        post: {
+          summary: 'Generate semantic vector embeddings for document passages',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    texts: { type: 'array', items: { type: 'string' } },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': { description: 'Generated vector embeddings' },
+          },
+        },
+      },
+      '/api/rag/analyze-image': {
+        post: {
+          summary: 'Analyze scanned report pages or chart images',
+          responses: {
+            '200': { description: 'Extracted text, statistics, and plain explanation' },
+          },
+        },
+      },
+      '/api/rag/table-explain': {
+        post: {
+          summary: 'Explain a structured statistical table with exact numerical fidelity',
+          responses: {
+            '200': { description: 'Plain-language table explanation' },
+          },
+        },
+      },
+    },
+  };
+
+  app.get('/api/health', (_req, res) => {
     return res.json({
-      provider: 'google.com',
-      authMethod: 'Google Cloud Auth (Firebase Authentication)',
-      authenticatedRequest: hasBearerToken,
-      emailPasswordEnabled: false,
+      status: 'ok',
+      service: 'Report Navigator AI',
+      authRequired: false,
+      timestamp: new Date().toISOString(),
     });
   });
+
+  app.get('/api/openapi.json', (_req, res) => {
+    return res.json(openApiSpec);
+  });
+
+  app.get('/api-docs', (_req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(`<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Navigator AI — Swagger UI API Documentation</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+  </head>
+  <body style="margin:0;background:#f8fafc;">
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
+    <script>
+      window.onload = function() {
+        window.ui = SwaggerUIBundle({
+          url: '/api/openapi.json',
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+        });
+      };
+    </script>
+  </body>
+</html>`);
+  });
+
 
   // 0. Model Discovery & Connection Status Endpoint (Checks Local Ollama + Built-in Local RAG + Cloud)
   app.get('/api/models/status', async (_req, res) => {

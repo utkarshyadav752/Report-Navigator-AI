@@ -4,10 +4,9 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { LogOut, Moon, Shield, Sun, User as UserIcon } from 'lucide-react';
+import { Moon, Shield, Sun } from 'lucide-react';
 import {
   AIModelMode,
-  AppUserProfile,
   ChatMessage,
   Citation,
   LanguageMode,
@@ -18,18 +17,14 @@ import {
 } from './types/report';
 import { validateCitationNavigation } from './utils/ragEngine';
 import {
-  canAccessProtectedRoute,
-  mapFirebaseUserToProfile,
   resolveInitialSection,
   resolveNavigationTarget,
 } from './utils/authHelpers';
 import {
-  auth,
-  onAuthStateChanged,
+  deleteReportFromFirestore,
   saveQuestionToFirestore,
   saveReportToFirestore,
-  signOutUser,
-  syncUserProfileToFirestore,
+  syncWorkspacePreferences,
 } from './firebase';
 import { DashboardView } from './components/DashboardView';
 import { UploadView } from './components/UploadView';
@@ -43,13 +38,11 @@ import { SummaryView } from './components/SummaryView';
 import { SettingsView } from './components/SettingsView';
 import { FineTuningLabView } from './components/FineTuningLabView';
 import { SourceExplorerModal } from './components/SourceExplorerModal';
-import { AuthScreen } from './components/AuthScreen';
 import { PublicHomePage } from './components/PublicHomePage';
 import { DEMO_REPORTS } from './utils/demoReports';
 
 declare global {
   interface Window {
-    __RN_SET_AUTH_PROFILE__?: (profile: AppUserProfile | null) => void;
     __RN_NAVIGATE__?: (section: NavigationSection) => void;
     __RN_LOAD_EVAL_DATASET__?: () => void;
   }
@@ -58,13 +51,14 @@ declare global {
 export default function App() {
   const [reports, setReports] = useState<Report[]>([]);
   const [activeReportId, setActiveReportId] = useState<string>('');
-  const [activeSection, setActiveSection] = useState<NavigationSection>('home');
+  const [activeSection, setActiveSection] = useState<NavigationSection>(() =>
+    resolveInitialSection()
+  );
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [savedResearch, setSavedResearch] = useState<SavedResearchItem[]>([]);
   const [languageMode, setLanguageMode] = useState<LanguageMode>('standard');
   const [modelMode, setModelMode] = useState<AIModelMode>('balanced');
   const [theme, setTheme] = useState<ThemeMode>('light');
-  const [userProfile, setUserProfile] = useState<AppUserProfile | null>(null);
 
   // Source Explorer Modal State
   const [sourceModalState, setSourceModalState] = useState<{
@@ -86,21 +80,6 @@ export default function App() {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        const mapped = mapFirebaseUserToProfile(currentUser);
-        setUserProfile(mapped);
-        setActiveSection((prev) =>
-          prev === 'home' || prev === 'auth' ? resolveInitialSection(mapped) : prev
-        );
-      } else {
-        setUserProfile(null);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
   const handleLoadEvaluationDataset = () => {
     setReports(DEMO_REPORTS);
     if (DEMO_REPORTS[0]) {
@@ -109,17 +88,13 @@ export default function App() {
   };
 
   const handleNavigate = (targetSection: NavigationSection) => {
-    const resolved = resolveNavigationTarget(targetSection, userProfile);
+    const resolved = resolveNavigationTarget(targetSection);
     setActiveSection(resolved);
   };
 
   useEffect(() => {
-    window.__RN_SET_AUTH_PROFILE__ = (profile: AppUserProfile | null) => {
-      setUserProfile(profile);
-      setActiveSection(resolveInitialSection(profile));
-    };
     window.__RN_NAVIGATE__ = (section: NavigationSection) => {
-      setActiveSection(resolveNavigationTarget(section, userProfile));
+      setActiveSection(resolveNavigationTarget(section));
     };
     window.__RN_LOAD_EVAL_DATASET__ = () => {
       setReports(DEMO_REPORTS);
@@ -128,32 +103,25 @@ export default function App() {
       }
     };
     return () => {
-      delete window.__RN_SET_AUTH_PROFILE__;
       delete window.__RN_NAVIGATE__;
       delete window.__RN_LOAD_EVAL_DATASET__;
     };
-  }, [userProfile]);
+  }, []);
 
   const handleToggleTheme = (nextTheme: ThemeMode) => {
     setTheme(nextTheme);
-    if (auth.currentUser) {
-      syncUserProfileToFirestore(auth.currentUser, languageMode, nextTheme).catch(() => {});
-    }
+    syncWorkspacePreferences(languageMode, nextTheme).catch(() => {});
   };
 
   const handleChangeLanguage = (nextLang: LanguageMode) => {
     setLanguageMode(nextLang);
-    if (auth.currentUser) {
-      syncUserProfileToFirestore(auth.currentUser, nextLang, theme).catch(() => {});
-    }
+    syncWorkspacePreferences(nextLang, theme).catch(() => {});
   };
 
   const handleReportProcessed = (newReport: Report) => {
     setReports((prev) => [newReport, ...prev]);
     setActiveReportId(newReport.reportId);
-    if (auth.currentUser) {
-      saveReportToFirestore(newReport).catch(() => {});
-    }
+    saveReportToFirestore(newReport).catch(() => {});
   };
 
   const handleDeleteReport = (reportId: string) => {
@@ -164,6 +132,7 @@ export default function App() {
       }
       return remaining;
     });
+    deleteReportFromFirestore(reportId).catch(() => {});
   };
 
   const handleAssignCollection = (reportId: string, collectionName: string) => {
@@ -174,7 +143,7 @@ export default function App() {
 
   const handleAddMessages = (userMsg: ChatMessage, assistantMsg: ChatMessage) => {
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
-    if (auth.currentUser && activeReport) {
+    if (activeReport) {
       saveQuestionToFirestore(activeReport.reportId, userMsg.content, assistantMsg).catch(
         () => {}
       );
@@ -223,40 +192,12 @@ export default function App() {
     setSavedResearch([]);
   };
 
-  const handleSignOut = async () => {
-    await signOutUser().catch(() => {});
-    setUserProfile(null);
-    setActiveSection('home');
-    if (typeof window !== 'undefined') {
-      window.location.hash = '';
-    }
-  };
-
-  // 1. Public Homepage: Publicly accessible without login or authentication modals
   if (activeSection === 'home') {
     return (
       <PublicHomePage
         theme={theme}
         onToggleTheme={() => handleToggleTheme(theme === 'light' ? 'dark' : 'light')}
-        onSignIn={() => handleNavigate('auth')}
-        onGetStarted={() => handleNavigate('auth')}
-      />
-    );
-  }
-
-  // 2. Dedicated Google Authentication Page: Shown when user clicks Sign In / Get Started
-  //    or when an unauthenticated user attempts to access a protected workspace route
-  if (activeSection === 'auth' || !canAccessProtectedRoute(userProfile, activeSection)) {
-    return (
-      <AuthScreen
-        onBackToHome={() => handleNavigate('home')}
-        onSuccess={(profile) => {
-          setUserProfile(profile);
-          setActiveSection('dashboard');
-          if (typeof window !== 'undefined') {
-            window.location.hash = '#dashboard';
-          }
-        }}
+        onOpenDashboard={() => handleNavigate('dashboard')}
       />
     );
   }
@@ -265,7 +206,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
-      {/* Sticky Navigation Bar — Phase 10 Organized Competition Navigation */}
+      {/* Sticky Navigation Bar — Direct Workspace Access */}
       <header className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-3 flex items-center justify-between gap-4">
         {/* Zone 1: Brand Wordmark + Shield Logo */}
         <a
@@ -282,7 +223,7 @@ export default function App() {
           <span>Report Navigator AI</span>
         </a>
 
-        {/* Zone 2: Primary 8-Item Competition Navigation */}
+        {/* Zone 2: Primary Navigation */}
         <nav
           aria-label="Primary Navigation"
           data-testid="workspace-navbar"
@@ -299,6 +240,7 @@ export default function App() {
               { id: 'summary', label: 'Research History' },
               { id: 'finetune', label: 'Fine-Tuning Lab' },
               { id: 'settings', label: 'Settings' },
+              { id: 'home', label: 'Overview' },
             ] as const
           ).map((item) => (
             <button
@@ -318,7 +260,7 @@ export default function App() {
           ))}
         </nav>
 
-        {/* Zone 3: Theme Toggle, Authenticated Google User Profile & Logout, Primary CTA */}
+        {/* Zone 3: Theme Toggle & Primary Upload CTA */}
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
@@ -330,32 +272,10 @@ export default function App() {
             {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </button>
 
-          {userProfile && (
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setActiveSection('settings')}
-                className="px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 cursor-pointer"
-              >
-                <UserIcon className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                <span className="max-w-[110px] truncate">{userProfile.displayName}</span>
-              </button>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                data-testid="header-logout-btn"
-                title="Log Out"
-                aria-label="Log Out"
-                className="p-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-
           <button
             type="button"
             onClick={() => setActiveSection('upload')}
+            data-testid="header-upload-btn"
             className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors whitespace-nowrap shrink-0 shadow-sm cursor-pointer"
           >
             + Upload PDF
@@ -371,7 +291,6 @@ export default function App() {
             activeReport={activeReport}
             recentMessages={messages}
             savedResearch={savedResearch}
-            userProfile={userProfile}
             totalQuestionsAnswered={totalQuestionsAnswered}
             onSelectReport={(id) => setActiveReportId(id)}
             onNavigate={(sec) => setActiveSection(sec)}
@@ -492,12 +411,10 @@ export default function App() {
             theme={theme}
             languageMode={languageMode}
             modelMode={modelMode}
-            user={userProfile}
             uploadedCount={reports.length}
             onToggleTheme={handleToggleTheme}
             onChangeLanguage={handleChangeLanguage}
             onChangeModel={setModelMode}
-            onSignOut={handleSignOut}
             onClearHistory={handleClearHistory}
           />
         )}
