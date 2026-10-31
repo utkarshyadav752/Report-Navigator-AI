@@ -1,0 +1,26 @@
+{
+  "overallQualityStatus": "HIGH_QUALITY_REPORT_CORPUS",
+  "totalPagesAudited": 12,
+  "cleanPagesCount": 12,
+  "duplicatePassagesCount": 0,
+  "missingFieldsCount": 0,
+  "formattingIssuesCount": 0,
+  "extractionErrorsCount": 0,
+  "crossReportDiscrepancies": [
+    {
+      "metric": "India's Installed Solar Photovoltaic Capacity (2026)",
+      "sourceA": "MoSPI National Statistical Compendium 2026 (Page 5): 104.8 GW (utility grid registry)",
+      "sourceB": "IESA Global Clean Energy Review 2026 (Page 2): 112.4 GW (satellite-audited utility + industrial arrays)",
+      "note": "Methodology difference across reports — must NOT be merged or overwritten; both citations must be preserved."
+    }
+  ],
+  "issues": [
+    {
+      "severity": "warning",
+      "category": "sft_limitation",
+      "location": "Dataset Architecture Audit",
+      "description": "PDF contains ordinary statistical report prose & tables (0 pre-labelled Q&A pairs).",
+      "remediation": "Prepared both a verbatim Page-Indexed RAG Corpus (rag_corpus_chunks.jsonl) and a deduplicated, leak-free Context-Grounded Instruction SFT Dataset (train/val/test.jsonl) where every example includes its retrieved [Page X] source passage."
+    }
+  ]
+}

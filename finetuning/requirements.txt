@@ -1,0 +1,11 @@
+# Requirements for Windows 11 | 8 GB RAM | NVIDIA RTX 3050 (<= 4 GB VRAM)
+# Install PyTorch with CUDA 12.1 first:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+transformers==4.46.3
+peft==0.13.2
+bitsandbytes==0.44.1
+datasets==3.1.0
+accelerate==1.1.1
+pdfplumber==0.11.4
+pypdf==5.1.0
+pyyaml==6.0.2

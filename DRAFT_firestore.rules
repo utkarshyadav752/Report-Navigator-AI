@@ -1,0 +1,265 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 0: Global Default-Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Global Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Validation Blueprints (Pillar 2: Anti-Update-Gap)
+    function isValidUserPublicProfile(data) {
+      return data.keys().hasAll(['uid', 'displayName', 'languagePreference', 'themePreference', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'displayName', 'languagePreference', 'themePreference', 'createdAt', 'updatedAt'])
+        && data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.uid == request.auth.uid
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 120
+        && data.languagePreference is string && data.languagePreference.size() >= 1 && data.languagePreference.size() <= 32
+        && data.languagePreference in ['standard', 'simple', 'hinglish', 'hindi']
+        && data.themePreference is string && data.themePreference.size() >= 1 && data.themePreference.size() <= 16
+        && data.themePreference in ['light', 'dark']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidUserPrivateInfo(data) {
+      return data.keys().hasAll(['uid', 'email', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'email', 'createdAt', 'updatedAt'])
+        && data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.uid == request.auth.uid
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 254
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidReportDocument(data) {
+      return data.keys().hasAll([
+          'reportId', 'ownerId', 'title', 'fileName',
+          'pageCount', 'chunkCount', 'tableCount', 'fileSize',
+          'status', 'summaryOverview', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'reportId', 'ownerId', 'title', 'fileName',
+          'pageCount', 'chunkCount', 'tableCount', 'fileSize',
+          'status', 'summaryOverview', 'createdAt', 'updatedAt'
+        ])
+        && data.reportId is string && data.reportId.size() >= 1 && data.reportId.size() <= 128 && data.reportId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId == request.auth.uid
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 240
+        && data.fileName is string && data.fileName.size() >= 1 && data.fileName.size() <= 240
+        && data.pageCount is int && data.pageCount >= 1 && data.pageCount <= 10000
+        && data.chunkCount is int && data.chunkCount >= 0 && data.chunkCount <= 50000
+        && data.tableCount is int && data.tableCount >= 0 && data.tableCount <= 5000
+        && data.fileSize is int && data.fileSize >= 0 && data.fileSize <= 500000000
+        && data.status is string && data.status.size() >= 1 && data.status.size() <= 32
+        && data.status in ['processing', 'ready', 'archived']
+        && data.summaryOverview is string && data.summaryOverview.size() >= 0 && data.summaryOverview.size() <= 10000
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidReportChunk(data) {
+      return data.keys().hasAll(['chunkId', 'reportId', 'ownerId', 'pageNumber', 'sectionTitle', 'content', 'createdAt'])
+        && data.keys().hasOnly(['chunkId', 'reportId', 'ownerId', 'pageNumber', 'sectionTitle', 'content', 'createdAt'])
+        && data.chunkId is string && data.chunkId.size() >= 1 && data.chunkId.size() <= 128 && data.chunkId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.reportId is string && data.reportId.size() >= 1 && data.reportId.size() <= 128 && data.reportId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId == request.auth.uid
+        && data.pageNumber is int && data.pageNumber >= 1 && data.pageNumber <= 10000
+        && data.sectionTitle is string && data.sectionTitle.size() >= 1 && data.sectionTitle.size() <= 240
+        && data.content is string && data.content.size() >= 1 && data.content.size() <= 8000
+        && data.createdAt is timestamp;
+    }
+
+    function isValidChatQuestion(data) {
+      return data.keys().hasAll([
+          'questionId', 'reportId', 'ownerId', 'question', 'answer',
+          'foundInReport', 'primaryPage', 'supportingPassage', 'languageMode', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'questionId', 'reportId', 'ownerId', 'question', 'answer',
+          'foundInReport', 'primaryPage', 'supportingPassage', 'languageMode', 'createdAt'
+        ])
+        && data.questionId is string && data.questionId.size() >= 1 && data.questionId.size() <= 128 && data.questionId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.reportId is string && data.reportId.size() >= 1 && data.reportId.size() <= 128 && data.reportId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.ownerId == request.auth.uid
+        && data.question is string && data.question.size() >= 1 && data.question.size() <= 2000
+        && data.answer is string && data.answer.size() >= 1 && data.answer.size() <= 15000
+        && data.foundInReport is bool
+        && data.primaryPage is int && data.primaryPage >= 0 && data.primaryPage <= 10000
+        && data.supportingPassage is string && data.supportingPassage.size() >= 0 && data.supportingPassage.size() <= 5000
+        && data.languageMode is string && data.languageMode.size() >= 1 && data.languageMode.size() <= 32
+        && data.languageMode in ['standard', 'simple', 'hinglish', 'hindi']
+        && data.createdAt is timestamp;
+    }
+
+    // Collection 1: User Public Profile (Split Collection Strategy - Non-PII)
+    match /users/{userId}/public/{docId} {
+      allow get: if isOwner(userId) && isValidId(userId) && isValidId(docId);
+      allow list: if isOwner(userId) && resource.data.uid == request.auth.uid;
+      allow create: if isVerifiedUser()
+        && isOwner(userId)
+        && isValidId(userId)
+        && isValidId(docId)
+        && docId == 'profile'
+        && isValidUserPublicProfile(incoming())
+        && incoming().uid == userId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser()
+        && isOwner(userId)
+        && isValidId(userId)
+        && isValidId(docId)
+        && docId == 'profile'
+        && isValidUserPublicProfile(incoming())
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'languagePreference', 'themePreference', 'updatedAt'])
+        );
+      allow delete: if isVerifiedUser() && isOwner(userId) && isValidId(userId) && isValidId(docId);
+    }
+
+    // Collection 2: User Private PII Info (Pillar 6: Strictly Isolated PII)
+    match /users/{userId}/private/{docId} {
+      allow get: if isOwner(userId) && isValidId(userId) && isValidId(docId);
+      allow list: if false;
+      allow create: if isVerifiedUser()
+        && isOwner(userId)
+        && isValidId(userId)
+        && isValidId(docId)
+        && docId == 'info'
+        && isValidUserPrivateInfo(incoming())
+        && incoming().uid == userId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser()
+        && isOwner(userId)
+        && isValidId(userId)
+        && isValidId(docId)
+        && docId == 'info'
+        && isValidUserPrivateInfo(incoming())
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          incoming().diff(existing()).affectedKeys().hasOnly(['email', 'updatedAt'])
+        );
+      allow delete: if isVerifiedUser() && isOwner(userId) && isValidId(userId) && isValidId(docId);
+    }
+
+    // Collection 3: Reports (Master Source of Truth)
+    match /reports/{reportId} {
+      allow get: if isSignedIn() && isValidId(reportId) && existing().ownerId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isVerifiedUser()
+        && isValidId(reportId)
+        && isValidReportDocument(incoming())
+        && incoming().reportId == reportId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser()
+        && isValidId(reportId)
+        && isValidReportDocument(incoming())
+        && existing().ownerId == request.auth.uid
+        && incoming().ownerId == existing().ownerId
+        && incoming().reportId == existing().reportId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && existing().status != 'archived'
+        && (
+          // Action 1: Finalize Processing
+          (existing().status == 'processing' && incoming().status == 'ready' && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'chunkCount', 'tableCount', 'summaryOverview', 'updatedAt'])) ||
+          // Action 2: Update Title, Metadata, or Summary
+          (existing().status == 'ready' && incoming().status == 'ready' && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'fileName', 'pageCount', 'chunkCount', 'tableCount', 'fileSize', 'summaryOverview', 'updatedAt'])) ||
+          // Action 3: Archive Report (Terminal State)
+          (existing().status == 'ready' && incoming().status == 'archived' && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']))
+        );
+      allow delete: if isVerifiedUser()
+        && isValidId(reportId)
+        && existing().ownerId == request.auth.uid;
+
+      // Subcollection 3A: Report Chunks (Pillar 1 Master Gate)
+      match /chunks/{chunkId} {
+        allow get: if isSignedIn()
+          && isValidId(reportId)
+          && isValidId(chunkId)
+          && existing().ownerId == request.auth.uid
+          && exists(/databases/$(database)/documents/reports/$(reportId))
+          && get(/databases/$(database)/documents/reports/$(reportId)).data.ownerId == request.auth.uid;
+        allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+        allow create: if isVerifiedUser()
+          && isValidId(reportId)
+          && isValidId(chunkId)
+          && isValidReportChunk(incoming())
+          && incoming().chunkId == chunkId
+          && incoming().reportId == reportId
+          && incoming().createdAt == request.time
+          && exists(/databases/$(database)/documents/reports/$(reportId))
+          && get(/databases/$(database)/documents/reports/$(reportId)).data.ownerId == request.auth.uid;
+        allow update: if false;
+        allow delete: if isVerifiedUser()
+          && isValidId(reportId)
+          && isValidId(chunkId)
+          && existing().ownerId == request.auth.uid
+          && exists(/databases/$(database)/documents/reports/$(reportId))
+          && get(/databases/$(database)/documents/reports/$(reportId)).data.ownerId == request.auth.uid;
+      }
+
+      // Subcollection 3B: Chat Questions (Pillar 1 Master Gate)
+      match /questions/{questionId} {
+        allow get: if isSignedIn()
+          && isValidId(reportId)
+          && isValidId(questionId)
+          && existing().ownerId == request.auth.uid
+          && exists(/databases/$(database)/documents/reports/$(reportId))
+          && get(/databases/$(database)/documents/reports/$(reportId)).data.ownerId == request.auth.uid;
+        allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+        allow create: if isVerifiedUser()
+          && isValidId(reportId)
+          && isValidId(questionId)
+          && isValidChatQuestion(incoming())
+          && incoming().questionId == questionId
+          && incoming().reportId == reportId
+          && incoming().createdAt == request.time
+          && exists(/databases/$(database)/documents/reports/$(reportId))
+          && get(/databases/$(database)/documents/reports/$(reportId)).data.ownerId == request.auth.uid;
+        allow update: if false;
+        allow delete: if isVerifiedUser()
+          && isValidId(reportId)
+          && isValidId(questionId)
+          && existing().ownerId == request.auth.uid
+          && exists(/databases/$(database)/documents/reports/$(reportId))
+          && get(/databases/$(database)/documents/reports/$(reportId)).data.ownerId == request.auth.uid;
+      }
+    }
+  }
+}

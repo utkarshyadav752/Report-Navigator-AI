@@ -1,0 +1,313 @@
+{
+  "entities": {
+    "UserPublicProfile": {
+      "title": "UserPublicProfile",
+      "description": "Non-PII public user preferences and display profile.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "languagePreference": {
+          "type": "string",
+          "description": "Preferred explanation language mode.",
+          "enum": ["standard", "simple", "hinglish", "hindi"],
+          "maxLength": 32
+        },
+        "themePreference": {
+          "type": "string",
+          "description": "Preferred UI color theme.",
+          "enum": ["light", "dark"],
+          "maxLength": 16
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of profile creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last profile update."
+        }
+      },
+      "required": ["uid", "displayName", "languagePreference", "themePreference", "createdAt", "updatedAt"]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Isolated PII record containing the user's verified email address.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email address.",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of update."
+        }
+      },
+      "required": ["uid", "email", "createdAt", "updatedAt"]
+    },
+    "ReportDocument": {
+      "title": "ReportDocument",
+      "description": "Metadata and executive summary for an uploaded statistical or government report.",
+      "type": "object",
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "description": "Unique identifier for the report.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the report owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable report title.",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Original uploaded PDF file name.",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "pageCount": {
+          "type": "integer",
+          "description": "Total number of pages in the report."
+        },
+        "chunkCount": {
+          "type": "integer",
+          "description": "Total number of page-aware RAG chunks extracted."
+        },
+        "tableCount": {
+          "type": "integer",
+          "description": "Total number of structured statistical tables extracted."
+        },
+        "fileSize": {
+          "type": "integer",
+          "description": "File size in bytes."
+        },
+        "status": {
+          "type": "string",
+          "description": "Processing lifecycle state.",
+          "enum": ["processing", "ready", "archived"],
+          "maxLength": 32
+        },
+        "summaryOverview": {
+          "type": "string",
+          "description": "Structured executive summary of the report.",
+          "minLength": 0,
+          "maxLength": 10000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the report was uploaded."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the report was last updated."
+        }
+      },
+      "required": [
+        "reportId",
+        "ownerId",
+        "title",
+        "fileName",
+        "pageCount",
+        "chunkCount",
+        "tableCount",
+        "fileSize",
+        "status",
+        "summaryOverview",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ReportChunk": {
+      "title": "ReportChunk",
+      "description": "A page-aware extracted text chunk belonging to a parent ReportDocument.",
+      "type": "object",
+      "properties": {
+        "chunkId": {
+          "type": "string",
+          "description": "Unique identifier for the chunk.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "reportId": {
+          "type": "string",
+          "description": "Parent report ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Owner UID matching the parent report owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "pageNumber": {
+          "type": "integer",
+          "description": "1-indexed page number where the passage appears."
+        },
+        "sectionTitle": {
+          "type": "string",
+          "description": "Detected section heading on the page.",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "content": {
+          "type": "string",
+          "description": "Cleaned text content of the chunk.",
+          "minLength": 1,
+          "maxLength": 8000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the chunk was indexed."
+        }
+      },
+      "required": ["chunkId", "reportId", "ownerId", "pageNumber", "sectionTitle", "content", "createdAt"]
+    },
+    "ChatQuestion": {
+      "title": "ChatQuestion",
+      "description": "A verified RAG question and cited answer persisted under a parent ReportDocument.",
+      "type": "object",
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "description": "Unique question record ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "reportId": {
+          "type": "string",
+          "description": "Parent report ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "UID of the user who asked the question.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "question": {
+          "type": "string",
+          "description": "User's natural language query.",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "answer": {
+          "type": "string",
+          "description": "Evidence-grounded answer or explicit refusal.",
+          "minLength": 1,
+          "maxLength": 15000
+        },
+        "foundInReport": {
+          "type": "boolean",
+          "description": "Whether supporting evidence was found in the report."
+        },
+        "primaryPage": {
+          "type": "integer",
+          "description": "Primary cited page number (0 if not found)."
+        },
+        "supportingPassage": {
+          "type": "string",
+          "description": "Verbatim supporting passage from the source report.",
+          "minLength": 0,
+          "maxLength": 5000
+        },
+        "languageMode": {
+          "type": "string",
+          "description": "Language mode used to generate the answer.",
+          "enum": ["standard", "simple", "hinglish", "hindi"],
+          "maxLength": 32
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the question was answered."
+        }
+      },
+      "required": [
+        "questionId",
+        "reportId",
+        "ownerId",
+        "question",
+        "answer",
+        "foundInReport",
+        "primaryPage",
+        "supportingPassage",
+        "languageMode",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/public/{docId}": {
+      "schema": "UserPublicProfile",
+      "description": "Stores non-PII user display and theme/language preferences."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": "UserPrivateInfo",
+      "description": "Stores isolated PII (verified email) accessible strictly by the owner."
+    },
+    "/reports/{reportId}": {
+      "schema": "ReportDocument",
+      "description": "Stores uploaded report metadata and processing status for each user."
+    },
+    "/reports/{reportId}/chunks/{chunkId}": {
+      "schema": "ReportChunk",
+      "description": "Stores page-indexed RAG chunks for a specific report."
+    },
+    "/reports/{reportId}/questions/{questionId}": {
+      "schema": "ChatQuestion",
+      "description": "Stores verified RAG Q&A interactions and citations for a specific report."
+    }
+  }
+}

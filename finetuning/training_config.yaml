@@ -1,0 +1,55 @@
+# Report Navigator AI — Low-Memory QLoRA Configuration
+# Target Hardware: Windows 11 | 8 GB System RAM | NVIDIA RTX 3050 (<= 4 GB VRAM) | > 50 GB Disk
+
+base_model: "Qwen/Qwen2.5-1.5B-Instruct"
+fallback_model: "meta-llama/Llama-3.2-1B-Instruct"
+
+dataset:
+  train_file: "./datasets/train.jsonl"
+  validation_file: "./datasets/validation.jsonl"
+  test_file: "./datasets/test.jsonl"
+  rag_corpus_file: "./datasets/rag_corpus_chunks.jsonl"
+  max_seq_length: 512
+
+quantization_4bit:
+  load_in_4bit: true
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_compute_dtype: "float16"
+  bnb_4bit_use_double_quant: true
+
+lora_adapter:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+
+training_arguments:
+  output_dir: "./checkpoints/qwen2.5-1.5b-report-navigator-lora"
+  num_train_epochs: 3
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  gradient_checkpointing: true
+  optim: "paged_adamw_8bit"
+  learning_rate: 0.0002
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  fp16: true
+  bf16: false
+  logging_steps: 5
+  eval_strategy: "steps"
+  eval_steps: 10
+  save_strategy: "steps"
+  save_steps: 10
+  save_total_limit: 2
+  load_best_model_at_end: true
+  dataloader_num_workers: 0
+  report_to: "none"
+  seed: 42

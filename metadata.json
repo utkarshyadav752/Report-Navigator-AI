@@ -1,0 +1,8 @@
+{
+  "name": "Report Navigator AI 1.0",
+  "description": "AI-powered document research assistant using Retrieval-Augmented Generation (RAG) and 3D citation topology to turn hundreds of pages of government and statistical reports into verified, page-cited answers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,708 @@
+{
+  "inspectedAt": "2026-10-31T05:18:42.114Z",
+  "documentCount": 2,
+  "totalPages": 12,
+  "totalWords": 1525,
+  "totalCharacters": 9558,
+  "totalChunks": 17,
+  "totalTables": 5,
+  "contentClassification": "ordinary_research_report",
+  "nativeSupervisedPairCount": 0,
+  "suitableForDirectUnmodifiedSft": false,
+  "suitabilityExplanation": "LIMITATION IDENTIFIED: The inspected PDF dataset (MoSPI_National_Statistical_Compendium_2026.pdf, IESA_Global_Clean_Energy_Review_2026.pdf) contains 0 native pre-labelled instruction-response pairs. It consists of ordinary government/statistical report prose, chapters, and structured numerical tables (12 pages, 5 tables). Raw PDF text extraction alone is NOT supervised model fine-tuning, and training a small language model on raw unlabelled paragraphs causes catastrophic forgetting and numeric hallucination.",
+  "ragAlternativeRecommendation": "RECOMMENDED HYBRID ARCHITECTURE: (1) Use the extracted Page-Indexed RAG Dataset (rag_corpus_chunks.jsonl) as the authoritative source of factual and numerical truth at inference time. (2) Use Context-Grounded QLoRA Instruction Fine-Tuning (train.jsonl / validation.jsonl / test.jsonl) strictly to teach the local model domain terminology, table-reading syntax, mandatory [Page X] citation formatting, and strict refusal (\"Insufficient evidence found in the uploaded reports.\") when evidence is absent.",
+  "topicsIdentified": [
+    "Demographics & Census",
+    "National Demographic & Economic Overview 2026",
+    "Decadal Population Growth & Fertility Transition",
+    "State-Level Performance, Literacy & Digital Inclusion",
+    "Macroeconomic Output, Fiscal Balance & Employment",
+    "Clean Energy Transition & Grid Infrastructure",
+    "Digital Public Infrastructure & Financial Inclusion",
+    "National Healthcare Infrastructure, District Hospitals & Ayushman Digital Mission",
+    "Agricultural Productivity, Foodgrain Reserves & Micro-Irrigation",
+    "National Highways, Dedicated Freight Corridors & Urban Metro Rail",
+    "Statistical Methodology, Sampling Frame & Audit Annexures",
+    "Energy & Climate",
+    "Global Clean Energy Statistical Review 2026",
+    "Regional Renewable Capacity & Storage Costs"
+  ],
+  "sectionsInventory": [
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 1,
+      "sectionTitle": "Executive Summary: National Demographic & Economic Overview 2026",
+      "wordCount": 106
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 2,
+      "sectionTitle": "Chapter 1: Decadal Population Growth & Fertility Transition",
+      "wordCount": 163
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 3,
+      "sectionTitle": "Chapter 2: State-Level Performance, Literacy & Digital Inclusion",
+      "wordCount": 259
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 4,
+      "sectionTitle": "Chapter 3: Macroeconomic Output, Fiscal Balance & Employment",
+      "wordCount": 218
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 5,
+      "sectionTitle": "Chapter 4: Clean Energy Transition & Grid Infrastructure",
+      "wordCount": 182
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 6,
+      "sectionTitle": "Chapter 5: Digital Public Infrastructure & Financial Inclusion",
+      "wordCount": 91
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 7,
+      "sectionTitle": "Chapter 6: National Healthcare Infrastructure, District Hospitals & Ayushman Digital Mission",
+      "wordCount": 102
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 8,
+      "sectionTitle": "Chapter 7: Agricultural Productivity, Foodgrain Reserves & Micro-Irrigation",
+      "wordCount": 52
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 9,
+      "sectionTitle": "Chapter 8: National Highways, Dedicated Freight Corridors & Urban Metro Rail",
+      "wordCount": 52
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 10,
+      "sectionTitle": "Chapter 9: Statistical Methodology, Sampling Frame & Audit Annexures",
+      "wordCount": 50
+    },
+    {
+      "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)",
+      "pageNumber": 1,
+      "sectionTitle": "Executive Summary: Global Clean Energy Statistical Review 2026",
+      "wordCount": 105
+    },
+    {
+      "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)",
+      "pageNumber": 2,
+      "sectionTitle": "Chapter 1: Regional Renewable Capacity & Storage Costs",
+      "wordCount": 145
+    }
+  ],
+  "tablesInventory": [
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 2,
+      "tableId": "demo_india_census_2026_tbl_1",
+      "title": "Table 1.1: National Demographic & Vital Indicators (2011 vs 2021 vs 2026)",
+      "unit": "Million",
+      "yearsCovered": [
+        "2011",
+        "2021",
+        "2026"
+      ],
+      "rowCount": 5,
+      "columnHeaders": [
+        "Indicator",
+        "Unit",
+        "2011 Census",
+        "2021 Survey",
+        "2026 Official"
+      ]
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 3,
+      "tableId": "demo_india_census_2026_tbl_2",
+      "title": "Table 2.1: State-Tier Literacy & Digital Connectivity Benchmarks (2026)",
+      "unit": "Reported Units",
+      "yearsCovered": [
+        "2026"
+      ],
+      "rowCount": 6,
+      "columnHeaders": [
+        "Region / State Cluster",
+        "Literacy Rate (%)",
+        "Female Literacy (%)",
+        "Higher Ed GER (%)",
+        "Rural Broadband (%)"
+      ]
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 4,
+      "tableId": "demo_india_census_2026_tbl_3",
+      "title": "Table 3.1: Macroeconomic & Fiscal Performance Indicators (FY 2022 vs FY 2024 vs FY 2026)",
+      "unit": "USD",
+      "yearsCovered": [
+        "2022",
+        "2024",
+        "2026"
+      ],
+      "rowCount": 5,
+      "columnHeaders": [
+        "Macroeconomic Metric",
+        "Unit",
+        "FY 2022",
+        "FY 2024",
+        "FY 2026"
+      ]
+    },
+    {
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 5,
+      "tableId": "demo_india_census_2026_tbl_4",
+      "title": "Table 4.1: Installed Power Generation Capacity by Source (GW)",
+      "unit": "GW",
+      "yearsCovered": [
+        "2020",
+        "2023",
+        "2026"
+      ],
+      "rowCount": 4,
+      "columnHeaders": [
+        "Generation Source",
+        "Unit",
+        "2020 Capacity",
+        "2023 Capacity",
+        "2026 Capacity"
+      ]
+    },
+    {
+      "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)",
+      "pageNumber": 2,
+      "tableId": "demo_global_energy_2026_tbl_1",
+      "title": "Table 1.1: Global Clean Energy & Storage Benchmarks (2020 vs 2023 vs 2026)",
+      "unit": "GW",
+      "yearsCovered": [
+        "2020",
+        "2023",
+        "2026"
+      ],
+      "rowCount": 4,
+      "columnHeaders": [
+        "Global Energy Indicator",
+        "Unit",
+        "2020",
+        "2023",
+        "2026"
+      ]
+    }
+  ],
+  "numericalSummary": {
+    "totalNumericTokens": 268,
+    "yearsDetected": [
+      "2005",
+      "2011",
+      "2017–18",
+      "2020",
+      "2021",
+      "2022",
+      "2023",
+      "2024",
+      "2025",
+      "2025–26",
+      "2026",
+      "2045"
+    ],
+    "sampleStatistics": [
+      {
+        "metric": "Total Population (2026)",
+        "value": "1,441.7 Million",
+        "pageNumber": 1,
+        "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)"
+      },
+      {
+        "metric": "National & State Literacy",
+        "value": "81.2% (Kerala 96.2%)",
+        "pageNumber": 3,
+        "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)"
+      },
+      {
+        "metric": "District Hospital Beds",
+        "value": "1,480,000 Beds",
+        "pageNumber": 7,
+        "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)"
+      },
+      {
+        "metric": "Non-Fossil Power Capacity",
+        "value": "214.6 GW",
+        "pageNumber": 5,
+        "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)"
+      },
+      {
+        "metric": "Cumulative Renewable Capacity",
+        "value": "4,462 GW",
+        "pageNumber": 1,
+        "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)"
+      },
+      {
+        "metric": "Battery Pack Cost",
+        "value": "USD 112/kWh",
+        "pageNumber": 2,
+        "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)"
+      }
+    ]
+  },
+  "terminologyInventory": [
+    {
+      "term": "MoSPI",
+      "expansionOrContext": "Ministry of Statistics and Programme Implementation",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 1,
+      "verbatimSentence": "According to the Ministry of Statistics and Programme Implementation (MoSPI) National Statistical Compendium 2026, India's total population reached 1,441.7 million as of March 1, 2026, reflecting a decadal deceleration in annual population growth rate to 0.89% per annum (down from 1.25% in 2011)."
+    },
+    {
+      "term": "TFR",
+      "expansionOrContext": "Total Fertility Rate (births per woman; replacement threshold 2.1)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 2,
+      "verbatimSentence": "The Total Fertility Rate (TFR) across India declined from 2.4 children per woman in 2011 to 1.96 children per woman in 2026, remaining below the replacement threshold of 2.1 for the fourth consecutive survey year."
+    },
+    {
+      "term": "IMR",
+      "expansionOrContext": "Infant Mortality Rate (per 1,000 live births)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 2,
+      "verbatimSentence": "Infant Mortality Rate (IMR) dropped to 23.4 per 1,000 live births, and life expectancy at birth reached 71.8 years (70.3 years for males and 73.4 years for females)."
+    },
+    {
+      "term": "GER",
+      "expansionOrContext": "Gross Enrolment Ratio in Higher Education",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 3,
+      "verbatimSentence": "Among individual states, Kerala recorded the highest literacy rate and ranked as the highest-performing state in human development at 96.2% (female literacy 95.4%), followed by Tamil Nadu as the highest-performing state in Higher Education Gross Enrolment Ratio (51.8% GER) and Maharashtra as the highest-performing state in nominal GSDP contribution (₹42.6 lakh crore)."
+    },
+    {
+      "term": "GSDP",
+      "expansionOrContext": "Gross State Domestic Product",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 3,
+      "verbatimSentence": "Among individual states, Kerala recorded the highest literacy rate and ranked as the highest-performing state in human development at 96.2% (female literacy 95.4%), followed by Tamil Nadu as the highest-performing state in Higher Education Gross Enrolment Ratio (51.8% GER) and Maharashtra as the highest-performing state in nominal GSDP contribution (₹42.6 lakh crore)."
+    },
+    {
+      "term": "CPI",
+      "expansionOrContext": "Consumer Price Index (headline inflation indicator)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 4,
+      "verbatimSentence": "Consumer Price Index (CPI) headline inflation averaged 4.3% over the 12-month period, remaining within the Reserve Bank tolerance band of 4% ± 2%."
+    },
+    {
+      "term": "PLFS",
+      "expansionOrContext": "Periodic Labour Force Survey",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 4,
+      "verbatimSentence": "The Periodic Labour Force Survey (PLFS) 2026 recorded a Labour Force Participation Rate (LFPR) of 59.6% for persons aged 15 years and above."
+    },
+    {
+      "term": "LFPR",
+      "expansionOrContext": "Labour Force Participation Rate (persons aged 15 years and above)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 4,
+      "verbatimSentence": "The Periodic Labour Force Survey (PLFS) 2026 recorded a Labour Force Participation Rate (LFPR) of 59.6% for persons aged 15 years and above."
+    },
+    {
+      "term": "FLFPR",
+      "expansionOrContext": "Female Labour Force Participation Rate",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 4,
+      "verbatimSentence": "Female Labour Force Participation Rate (FLFPR) increased from 23.3% in 2017–18 to 41.7% in 2026, driven by rural self-employment collectives and formal digital services."
+    },
+    {
+      "term": "GDP",
+      "expansionOrContext": "Employment\n\nReal Gross Domestic Product",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 4,
+      "verbatimSentence": "Real Gross Domestic Product (GDP) expanded by 7.2% in FY 2025–26, reaching nominal GDP of USD 4,280 billion (₹357.4 lakh crore)."
+    },
+    {
+      "term": "BESS",
+      "expansionOrContext": "Battery Energy Storage Systems (grid-scale operational storage)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 5,
+      "verbatimSentence": "Grid-scale battery energy storage systems (BESS) commissioned 6.8 GWh of operational capacity in FY 2025–26, reducing peak evening thermal curtailment by 14.2%."
+    },
+    {
+      "term": "GW",
+      "expansionOrContext": "Installed Power Generation Capacity by Source",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 5,
+      "verbatimSentence": "Table 4.1: Installed Power Generation Capacity by Source (GW)"
+    },
+    {
+      "term": "UPI",
+      "expansionOrContext": "Unified Payments Interface (digital public payment infrastructure)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 6,
+      "verbatimSentence": "Unified Payments Interface (UPI) processed 168.4 billion transactions in FY 2025–26 with a cumulative transaction value of ₹246.8 lakh crore (USD 2.96 trillion), representing a 28.4% year-over-year volume expansion."
+    },
+    {
+      "term": "DBT",
+      "expansionOrContext": "Direct Benefit Transfer (Aadhaar-authenticated welfare pipelines)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 6,
+      "verbatimSentence": "Direct Benefit Transfer (DBT) pipelines disbursed ₹7.82 lakh crore across 318 central and state welfare schemes in FY 2025–26, achieving cumulative audited leakage savings of ₹3.48 lakh crore through Aadhaar-authenticated beneficiary deduplication."
+    },
+    {
+      "term": "HWC",
+      "expansionOrContext": "Ayushman Bharat Health and Wellness Centres",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 7,
+      "verbatimSentence": "Across all 36 states and union territories, operational Ayushman Bharat Health and Wellness Centres (HWCs) reached 174,820 facilities as of March 2026, delivering 2.84 billion cumulative primary care teleconsultations."
+    },
+    {
+      "term": "MMR",
+      "expansionOrContext": "Maternal Mortality Ratio (per 100,000 live births)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 7,
+      "verbatimSentence": "Public District Hospital bed capacity expanded to 1,480,000 beds in 2026 (up from 1,090,000 beds in 2021), while the National Maternal Mortality Ratio (MMR) declined to 88 per 100,000 live births."
+    },
+    {
+      "term": "ABHA",
+      "expansionOrContext": "Ayushman Bharat Health Account (verified Digital Health IDs)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 7,
+      "verbatimSentence": "Verified Digital Health IDs (ABHA accounts) linked to electronic medical records reached 684.5 million citizens, and public expenditure on primary and secondary healthcare rose to 2.35% of GDP in FY 2025–26."
+    },
+    {
+      "term": "CAPI",
+      "expansionOrContext": "Computer-Assisted Personal Interviewing",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 10,
+      "verbatimSentence": "The 2026 National Statistical Compendium synthesizes household enumerations across 784 districts, 642,000 rural villages, and 8,450 urban frame blocks using computer-assisted personal interviewing (CAPI)."
+    },
+    {
+      "term": "RSE",
+      "expansionOrContext": "Relative Standard Error (statistical sampling precision metric)",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "pageNumber": 10,
+      "verbatimSentence": "All district-level aggregates satisfy a relative standard error (RSE) threshold below 1.25% at the 95% confidence interval."
+    },
+    {
+      "term": "IESA",
+      "expansionOrContext": "International Energy Statistical Agency",
+      "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)",
+      "pageNumber": 1,
+      "verbatimSentence": "According to the International Energy Statistical Agency (IESA) 2026 Annual Compendium, global renewable power capacity additions reached 584 GW in calendar year 2025, bringing cumulative worldwide renewable generation capacity to 4,462 GW as of January 2026."
+    },
+    {
+      "term": "LFP",
+      "expansionOrContext": "Lithium-Iron-Phosphate (utility-scale battery chemistry)",
+      "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)",
+      "pageNumber": 1,
+      "verbatimSentence": "Global utility-scale lithium-iron-phosphate (LFP) battery pack prices fell to a record low of USD 112 per kWh in 2026, down from USD 151 per kWh in 2022, unlocking 118 GWh of new grid-forming storage installations across Asia, Europe, and North America."
+    }
+  ],
+  "pageInspections": [
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 1,
+      "sectionTitle": "Executive Summary: National Demographic & Economic Overview 2026",
+      "wordCount": 106,
+      "charCount": 763,
+      "tableCount": 0,
+      "numbersDetected": [
+        "2026",
+        "2026,",
+        "1,441.7 million",
+        "1,",
+        "2026,",
+        "0.89%",
+        "1.25%",
+        "2011"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Clean native PDF text stream; section heading and numbers intact."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 2,
+      "sectionTitle": "Chapter 1: Decadal Population Growth & Fertility Transition",
+      "wordCount": 163,
+      "charCount": 875,
+      "tableCount": 1,
+      "numbersDetected": [
+        "1",
+        "2.4",
+        "2011",
+        "1.96",
+        "2026,",
+        "2.1",
+        "23.4",
+        "1,000"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Contains structured statistical table (5 data rows)."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 3,
+      "sectionTitle": "Chapter 2: State-Level Performance, Literacy & Digital Inclusion",
+      "wordCount": 259,
+      "charCount": 1515,
+      "tableCount": 1,
+      "numbersDetected": [
+        "2",
+        "7 years",
+        "81.2%",
+        "2026,",
+        "74.04%",
+        "2011",
+        "86.7%",
+        "9.9"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Contains structured statistical table (6 data rows)."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 4,
+      "sectionTitle": "Chapter 3: Macroeconomic Output, Fiscal Balance & Employment",
+      "wordCount": 218,
+      "charCount": 1204,
+      "tableCount": 1,
+      "numbersDetected": [
+        "3",
+        "7.2%",
+        "2025",
+        "26,",
+        "USD 4,280 billion",
+        "₹357.4",
+        "₹2,14,850",
+        "USD 2,575"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Contains structured statistical table (5 data rows)."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 5,
+      "sectionTitle": "Chapter 4: Clean Energy Transition & Grid Infrastructure",
+      "wordCount": 182,
+      "charCount": 1064,
+      "tableCount": 1,
+      "numbersDetected": [
+        "4",
+        "214.6 GW",
+        "2026,",
+        "46.8%",
+        "458.5 GW",
+        "104.8 GW",
+        "2026,",
+        "51.2 GW"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Contains structured statistical table (4 data rows)."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 6,
+      "sectionTitle": "Chapter 5: Digital Public Infrastructure & Financial Inclusion",
+      "wordCount": 91,
+      "charCount": 666,
+      "tableCount": 0,
+      "numbersDetected": [
+        "5",
+        "168.4 billion",
+        "2025",
+        "26",
+        "₹246.8",
+        "USD 2.96 trillion",
+        "28.4%",
+        "542.6 million"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Clean native PDF text stream; section heading and numbers intact."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 7,
+      "sectionTitle": "Chapter 6: National Healthcare Infrastructure, District Hospitals & Ayushman Digital Mission",
+      "wordCount": 102,
+      "charCount": 718,
+      "tableCount": 0,
+      "numbersDetected": [
+        "6",
+        "36",
+        "174,820",
+        "2026,",
+        "2.84 billion",
+        "1,480,000 beds",
+        "2026",
+        "1,090,000 beds"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Clean native PDF text stream; section heading and numbers intact."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 8,
+      "sectionTitle": "Chapter 7: Agricultural Productivity, Foodgrain Reserves & Micro-Irrigation",
+      "wordCount": 52,
+      "charCount": 416,
+      "tableCount": 0,
+      "numbersDetected": [
+        "7",
+        "341.6 million",
+        "2025",
+        "26,",
+        "18.9 million",
+        "44.2 million",
+        "11.4%",
+        "6.8%"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Clean native PDF text stream; section heading and numbers intact."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 9,
+      "sectionTitle": "Chapter 8: National Highways, Dedicated Freight Corridors & Urban Metro Rail",
+      "wordCount": 52,
+      "charCount": 391,
+      "tableCount": 0,
+      "numbersDetected": [
+        "8",
+        "148,500",
+        "2026,",
+        "6,420",
+        "1,045",
+        "23",
+        "11.8 million"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Clean native PDF text stream; section heading and numbers intact."
+      ]
+    },
+    {
+      "reportId": "demo_india_census_2026",
+      "reportTitle": "India National Statistical & Demographic Survey 2026 (MoSPI)",
+      "fileName": "MoSPI_National_Statistical_Compendium_2026.pdf",
+      "pageNumber": 10,
+      "sectionTitle": "Chapter 9: Statistical Methodology, Sampling Frame & Audit Annexures",
+      "wordCount": 50,
+      "charCount": 398,
+      "tableCount": 0,
+      "numbersDetected": [
+        "9",
+        "2026",
+        "784",
+        "642,000",
+        "8,450",
+        "1.25%",
+        "95%"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Clean native PDF text stream; section heading and numbers intact."
+      ]
+    },
+    {
+      "reportId": "demo_global_energy_2026",
+      "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)",
+      "fileName": "IESA_Global_Clean_Energy_Review_2026.pdf",
+      "pageNumber": 1,
+      "sectionTitle": "Executive Summary: Global Clean Energy Statistical Review 2026",
+      "wordCount": 105,
+      "charCount": 702,
+      "tableCount": 0,
+      "numbersDetected": [
+        "2026",
+        "2026",
+        "584 GW",
+        "2025,",
+        "4,462 GW",
+        "2026",
+        "USD 2,140 billion",
+        "2.1"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Clean native PDF text stream; section heading and numbers intact."
+      ]
+    },
+    {
+      "reportId": "demo_global_energy_2026",
+      "reportTitle": "Global Clean Energy & Grid Storage Compendium 2026 (IESA)",
+      "fileName": "IESA_Global_Clean_Energy_Review_2026.pdf",
+      "pageNumber": 2,
+      "sectionTitle": "Chapter 1: Regional Renewable Capacity & Storage Costs",
+      "wordCount": 145,
+      "charCount": 846,
+      "tableCount": 1,
+      "numbersDetected": [
+        "1",
+        "42.6%",
+        "13,180 TWh",
+        "30,940 TWh",
+        "2025",
+        "26",
+        "74%",
+        "112.4 GW"
+      ],
+      "hasNativeQaPairs": false,
+      "extractionStatus": "clean",
+      "notes": [
+        "Contains structured statistical table (4 data rows)."
+      ]
+    }
+  ]
+}

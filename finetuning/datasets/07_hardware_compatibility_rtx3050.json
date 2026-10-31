@@ -1,0 +1,68 @@
+{
+  "os": "Windows 11 (64-bit)",
+  "systemRamGb": 8,
+  "gpuModel": "NVIDIA GeForce RTX 3050 (Laptop/OEM)",
+  "gpuVramGb": 4,
+  "storageAvailableGb": 50,
+  "selectedPrimaryModel": "Qwen/Qwen2.5-1.5B-Instruct",
+  "selectedFallbackModel": "meta-llama/Llama-3.2-1B-Instruct",
+  "whyCloudSandboxCannotTrainWeights": "Google AI Studio Build mode runs inside a stateless Node.js web preview container without local NVIDIA CUDA GPUs for PyTorch backprop weight updates. Therefore, actual QLoRA weight training must be executed locally on your Windows 11 RTX 3050 machine (or free Google Colab T4) using the generated Python scripts in /finetuning/.",
+  "memoryOptimizationNotes": [
+    "4-bit NF4 Quantization (bitsandbytes): Compresses 1.5B base model weights from ~3.0 GB (FP16) down to ~1.05 GB in VRAM.",
+    "Paged 8-bit Optimizer (paged_adamw_8bit): Automatically pages optimizer states to Windows system RAM if RTX 3050 VRAM spikes near the 4.0 GB hardware ceiling.",
+    "Gradient Checkpointing (gradient_checkpointing=True): Recomputes intermediate activations during backward pass instead of storing them all in VRAM, reducing activation memory by ~60%.",
+    "Micro-Batch Size = 1 with Gradient Accumulation = 8: Keeps peak activation memory under 2.3 GB VRAM while achieving an effective batch size of 8.",
+    "Sequence Length Cap (max_seq_length = 512): Prevents quadratic attention memory explosion on 4 GB VRAM while fitting a full retrieved report passage + cited response.",
+    "8 GB System RAM Safeguard: Set low_cpu_mem_usage=True and num_proc=1 during dataset tokenization to avoid Windows pagefile thrashing."
+  ],
+  "candidates": [
+    {
+      "modelId": "Qwen/Qwen2.5-1.5B-Instruct",
+      "parameterCount": "1.54 Billion",
+      "quantization": "4-bit NF4 (QLoRA r=8, alpha=16)",
+      "estimatedVramGb": 2.2,
+      "estimatedSystemRamGb": 4.5,
+      "status": "RECOMMENDED",
+      "maxSeqLength": 512,
+      "batchSize": 1,
+      "gradientAccumulationSteps": 8,
+      "explanation": "Best balance of statistical table reasoning, multilingual (English/Hindi/Hinglish) support, and memory safety. Leaves ~1.8 GB VRAM headroom for Windows 11 Display Driver (WDDM)."
+    },
+    {
+      "modelId": "meta-llama/Llama-3.2-1B-Instruct",
+      "parameterCount": "1.23 Billion",
+      "quantization": "4-bit NF4 (QLoRA r=8, alpha=16)",
+      "estimatedVramGb": 1.8,
+      "estimatedSystemRamGb": 4,
+      "status": "RECOMMENDED",
+      "maxSeqLength": 512,
+      "batchSize": 1,
+      "gradientAccumulationSteps": 8,
+      "explanation": "Fastest training speed and lowest VRAM footprint (~1.8 GB). Ideal if Windows 11 reserves 0.8+ GB VRAM for desktop compositing."
+    },
+    {
+      "modelId": "Qwen/Qwen2.5-3B-Instruct",
+      "parameterCount": "3.09 Billion",
+      "quantization": "4-bit NF4 (QLoRA r=4, alpha=8)",
+      "estimatedVramGb": 3.6,
+      "estimatedSystemRamGb": 6.2,
+      "status": "TIGHT_FIT_CAUTION",
+      "maxSeqLength": 384,
+      "batchSize": 1,
+      "gradientAccumulationSteps": 16,
+      "explanation": "Borderline on 4 GB VRAM because Windows 11 WDDM typically reserves 0.5–0.7 GB VRAM. Can trigger CUDA OOM if browser or IDE windows are open during training."
+    },
+    {
+      "modelId": "mistralai/Mistral-7B-Instruct-v0.3",
+      "parameterCount": "7.24 Billion",
+      "quantization": "4-bit NF4",
+      "estimatedVramGb": 5.4,
+      "estimatedSystemRamGb": 9.5,
+      "status": "EXCEEDS_VRAM_NOT_RECOMMENDED",
+      "maxSeqLength": 512,
+      "batchSize": 1,
+      "gradientAccumulationSteps": 16,
+      "explanation": "NOT RECOMMENDED for local training: 4-bit weights alone require ~4.1 GB VRAM before activations or KV cache, exceeding both your 4 GB RTX 3050 VRAM and 8 GB system RAM."
+    }
+  ]
+}
